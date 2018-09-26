@@ -1,0 +1,87 @@
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  display: grid;
+  background-color: #fefefe;
+  margin: 10px auto; /* 10px from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  grid-template-areas:
+    "left space right";
+  grid-template-rows: 20% 20px auto;
+}
+
+.modal-content > .left {
+  grid-area: left;
+  padding: 0px 20px;
+}
+
+.modal-content > .space {
+  grid-area: space;
+  border-left: 1px solid slategrey;
+}
+
+.modal-content > .right {
+  grid-area: right;
+}
+
+.modal-content > .right > .days {
+  margin-left: 10px;
+}
+
+.modal-content > .right > .days .day {
+  float: left;
+  font-size: 16px;
+  border: 1px solid slategray;
+  padding: 0px 15px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  width: 80px;
+}
+
+.modal-content > .right > .days .day > h2 {
+  font-size: 16px;
+}
+
+.modal-content > .right > .days .day > p {
+  text-align: left;
+}
+
+.modal-content > .right > .days .day img {
+  width: 80px;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
