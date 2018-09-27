@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import GoogleMapReact from 'google-map-react';
+import { withAlert } from 'react-alert';
 
 import Modal from './Modal';
 import './App.css';
@@ -93,10 +94,14 @@ class App extends Component {
   };
 
   displayError = error => {
-    this.setState(prevState => ({
-      error,
-      show: !prevState.show,
-    }));
+    this.setState(prevState => {
+      this.props.alert.error(error);
+
+      return {
+        error,
+        show: !prevState.show,
+      };
+    });
   };
 
   render() {
@@ -105,7 +110,6 @@ class App extends Component {
 
     return (
       <div className="App">
-        {this.state.error ? <div>{this.state.error}</div> : null}
         <GoogleMapReact
           bootstrapURLKeys={{ key: REACT_APP_GOOGLE_MAPS_TOKEN }}
           defaultCenter={defaultCenter}
@@ -139,4 +143,10 @@ class App extends Component {
   }
 }
 
-export default App;
+App.propTypes = {
+  alert: PropTypes.shape({
+    error: PropTypes.func,
+  }).isRequired,
+};
+
+export default withAlert(App);

@@ -5,6 +5,8 @@ import moment from 'moment';
 import tz from 'moment-timezone';
 import RingLoader from 'react-spinners/RingLoader';
 
+import API from '../lib/api';
+
 const DAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 class Modal extends React.Component {
@@ -18,31 +20,21 @@ class Modal extends React.Component {
   }
 
   componentWillMount() {
-    const { REACT_APP_GMARCONE_API_URL } = process.env;
     const { latitude, longitude } = this.props;
     this.setState(prevState => ({
       loading: !prevState.loading,
     }));
-    const URL = `${REACT_APP_GMARCONE_API_URL}/api/forecast?latitude=${latitude}&longitude=${longitude}&lang=es`;
-    fetch(URL)
-      .then(res => {
-        if (res.status === 400) {
-          const error = 'No pudimos encontrar datos de esa zona que clickeaste :(';
-          this.props.displayError(error);
 
-          return Promise.reject(new Error(error));
-        }
-
-        return res.json();
-      })
+    API.requestData(latitude, longitude)
       .then(res => {
         this.setState(prevState => ({
           data: res,
           loading: !prevState.loading,
         }));
       })
-      // eslint-disable-next-line
-      .catch(err => console.error(err));
+      .catch(err => {
+        this.props.displayError(err.message);
+      });
   }
 
   componentDidMount() {
