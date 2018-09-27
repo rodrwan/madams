@@ -12,6 +12,12 @@ class Forecast {
           return Promise.reject(new Error(error));
         }
 
+        if (res.status === 500) {
+          const error = 'Error crítico, vuelve a intentarlo en un rato.';
+
+          return Promise.reject(new Error(error));
+        }
+
         return res.json();
       })
       .then(res => res);
