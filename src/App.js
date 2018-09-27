@@ -110,34 +110,97 @@ class App extends Component {
 
     return (
       <div className="App">
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: REACT_APP_GOOGLE_MAPS_TOKEN }}
-          defaultCenter={defaultCenter}
-          defaultZoom={2}
-          options={maps => ({
-            minZoom: 2,
-            zoomControl: false,
-            mapTypeId: maps.MapTypeId.ROADMAP,
-            styles,
-            disableDoubleClickZoom: true,
-            fullscreenControl: false,
-            scrollwheel: false,
-            navigationControl: false,
-            mapTypeControl: false,
-            scaleControl: false,
-            draggable: false,
-            language: 'es',
-          })}
-          onClick={this.onChildClick}
-        />
-        {this.state.show ? (
-          <Modal
-            latitude={latitude}
-            longitude={longitude}
-            hideModal={this.hideModal}
-            displayError={this.displayError}
+        <div className="left">
+          <h2>Acidlab challenge</h2>
+
+          <p>
+            Tecnologies used here:
+            <ul>
+              <li>Google Maps</li>
+              <li>Google GeoCode</li>
+              <li>Darksky</li>
+              <li>Restcountries</li>
+              <li>ReactJS</li>
+              <li>NodeJS</li>
+              <li>Redis</li>
+              <li>Docker</li>
+              <li>Docker compose</li>
+              <li>Traefik</li>
+            </ul>
+          </p>
+
+          <p>
+            Repositories:
+            <ul>
+              <li>
+                <a
+                  href="https://github.com/rodrwan/madmas"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  madams
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/rodrwan/gmarcone"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  gmarcone
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://github.com/rodrwan/forecast-manifest"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Manifest
+                </a>
+              </li>
+              <li>
+                <a
+                href="http://dockhero-rugged-50468.dockhero.io:8080/dashboard/"
+                target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Traefik Dashboard
+                </a>
+              </li>
+            </ul>
+          </p>
+        </div>
+        <div className="right">
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: REACT_APP_GOOGLE_MAPS_TOKEN }}
+            defaultCenter={defaultCenter}
+            defaultZoom={2}
+            options={maps => ({
+              minZoom: 2,
+              zoomControl: false,
+              mapTypeId: maps.MapTypeId.ROADMAP,
+              styles,
+              disableDoubleClickZoom: true,
+              fullscreenControl: false,
+              scrollwheel: false,
+              navigationControl: false,
+              mapTypeControl: false,
+              scaleControl: false,
+              draggable: false,
+              language: 'es',
+            })}
+            onClick={this.onChildClick}
           />
-        ) : null}
+          {this.state.show ? (
+            <Modal
+              latitude={latitude}
+              longitude={longitude}
+              hideModal={this.hideModal}
+              displayError={this.displayError}
+            />
+          ) : null}
+        </div>
       </div>
     );
   }

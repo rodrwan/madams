@@ -5,6 +5,31 @@ body {
   font-family: sans-serif;
 }
 
+.App > .left {
+  font-size: 16px;
+  grid-area: left;
+  border: 0px solid;
+}
+
+.App > .left ul {
+  text-align: left;
+}
+
+.App > .left ul li > a{
+  text-decoration: none;
+  color: #3c46d3
+}
+
+.App > .left ul li > a:hover{
+  text-decoration: underline;
+  color: #222dce
+}
+
+.App > .right {
+  grid-area: right;
+  width: 1024px;
+}
+
 .modal {
   display: block; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -25,7 +50,7 @@ body {
   margin: 100px auto; /* 10px from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 1140px; /* Could be more or less, depending on screen size */
   grid-template-areas:
     ". . header"
     "left space right";
