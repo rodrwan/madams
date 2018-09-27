@@ -1,63 +1,138 @@
-import React, { Component } from "react";
-import moment from "moment";
-import tz from "moment-timezone";
+import React, { Component } from 'react';
 
-import "./App.css";
+import GoogleMapReact from 'google-map-react';
 
-const DAYS = [
-  "Domingo",
-  "Lunes",
-  "Martes",
-  "Miércoles",
-  "Jueves",
-  "Viernes",
-  "Sábado"
+import Modal from './Modal';
+import './App.css';
+
+const styles = [
+  {
+    stylers: [{ hue: '#A3DAFD' }, { saturation: -20 }],
+  },
+  {
+    featureType: 'landscape',
+    stylers: [{ hue: '#ffff66' }, { saturation: 100 }],
+  },
+  {
+    featureType: 'road',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative.land_parcel',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative.locality',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative.neighborhood',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'administrative.province',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'landscape.man_made',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'landscape.natural',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'poi',
+    stylers: [{ visibility: 'off' }],
+  },
+  {
+    featureType: 'transit',
+    stylers: [{ visibility: 'off' }],
+  },
 ];
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       show: false,
-      latitude: 37.8267,
-      longitude: -122.4233
+      latitude: 0,
+      longitude: 0,
+      defaultCenter: { lat: 0, lng: 0 },
+      countryName: '',
+      error: null,
     };
   }
 
-  componentWillMount() {
-    this.getLocation();
-  }
+  onChildClick = event => {
+    const { lat, lng } = event;
 
-  getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords;
-        this.setState({
-          latitude,
-          longitude
-        });
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+    this.setState(prevState => ({
+      error: null,
+      show: !prevState.show,
+      latitude: lat,
+      longitude: lng,
+    }));
   };
 
   showModal = e => {
     e.preventDefault();
 
     this.setState(prevState => ({
-      show: !prevState.show
+      show: !prevState.show,
+    }));
+  };
+
+  hideModal = e => {
+    e.preventDefault();
+
+    this.setState(prevState => ({
+      show: !prevState.show,
+    }));
+  };
+
+  displayError = error => {
+    this.setState(prevState => ({
+      error,
+      show: !prevState.show,
     }));
   };
 
   render() {
-    const { latitude, longitude } = this.state;
+    const { latitude, longitude, defaultCenter } = this.state;
+    const { REACT_APP_GOOGLE_MAPS_TOKEN } = process.env;
+
     return (
       <div className="App">
-        <button onClick={this.showModal}>Open</button>
+        {this.state.error ? <div>{this.state.error}</div> : null}
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: REACT_APP_GOOGLE_MAPS_TOKEN }}
+          defaultCenter={defaultCenter}
+          defaultZoom={2}
+          options={maps => ({
+            minZoom: 2,
+            zoomControl: false,
+            mapTypeId: maps.MapTypeId.ROADMAP,
+            styles,
+            disableDoubleClickZoom: true,
+            fullscreenControl: false,
+            scrollwheel: false,
+            navigationControl: false,
+            mapTypeControl: false,
+            scaleControl: false,
+            draggable: false,
+            language: 'es',
+          })}
+          onClick={this.onChildClick}
+        />
         {this.state.show ? (
-          <Modal latitude={latitude} longitude={longitude} />
+          <Modal
+            latitude={latitude}
+            longitude={longitude}
+            hideModal={this.hideModal}
+            displayError={this.displayError}
+          />
         ) : null}
       </div>
     );
@@ -65,89 +140,3 @@ class App extends Component {
 }
 
 export default App;
-
-class Modal extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      data: null,
-      loading: false
-    };
-  }
-
-  componentWillMount() {
-    const { latitude, longitude } = this.props;
-    this.setState(prevState => ({
-      loading: !prevState.loading
-    }));
-
-    fetch(
-      `http://localhost:3000/api/forecast?latitude=${latitude}&longitude=${longitude}&lang=es`
-    )
-      .then(res => res.json())
-      .then(res => {
-        console.log(res);
-        this.setState(prevState => ({
-          data: res,
-          loading: !prevState.loading
-        }));
-      });
-  }
-
-  render() {
-    const { loading, data } = this.state;
-
-    if (loading) {
-      return <div>loading...</div>;
-    }
-
-    return (
-      <div className="modal">
-        <div className="modal-content">
-          <div className="left">
-            <h1>Hoy</h1>
-            <p>{data.currently.summary}</p>
-            <img
-              src={`/images/${data.currently.icon}.png`}
-              alt={data.currently.summary}
-            />
-            <p>
-              {moment
-                .unix(data.currently.time)
-                .tz(data.timezone)
-                .format("DD/MM/YYYY")}
-            </p>
-            <p>{data.currently.temperature}º</p>
-          </div>
-          <div className="space" />
-          <div className="right">
-            <h3>Pronóstico próximos 7 días</h3>
-            <h4>{data.daily.summary}</h4>
-            <div className="days">
-              {data.daily.data.map(day => (
-                <div className="day">
-                  <h2>
-                    {
-                      DAYS[
-                        moment
-                          .unix(day.time)
-                          .tz(data.timezone)
-                          .day()
-                      ]
-                    }
-                  </h2>
-                  <img src={`/images/${day.icon}.png`} alt={day.summary} />
-                  <p>
-                    Min: {day.temperatureLow.toFixed(1)}º<br />
-                    Max: {day.temperatureHigh.toFixed(1)}º
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
