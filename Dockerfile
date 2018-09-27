@@ -10,5 +10,6 @@ RUN yarn build
 FROM node:alpine
 COPY --from=build-deps /usr/src/app/build /usr/src/app/www
 RUN yarn global add serve
-EXPOSE 80
-CMD ["serve", "-l 80", "www"]
+EXPOSE 5000
+
+CMD serve -s /usr/src/app/www
